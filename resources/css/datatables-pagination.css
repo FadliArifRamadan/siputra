@@ -1,0 +1,122 @@
+/* =========================================================
+   Restyle pagination bawaan DataTables (.dataTables_paginate)
+   Taruh file ini di resources/css/app.css (lalu import),
+   atau bungkus dengan <style>...</style> langsung di layout Blade.
+   ========================================================= */
+
+.dataTables_wrapper .dataTables_paginate {
+    display: flex !important;
+    flex-wrap: nowrap !important;          /* <- ini yang bikin dulu numpuk ke bawah */
+    align-items: center !important;
+    justify-content: flex-end !important;  /* pojok kanan, sesuai posisi di screenshot */
+    gap: 0.25rem !important;
+    margin-top: 1rem !important;
+    overflow-x: auto !important;
+    width: auto !important;
+    background: transparent !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 2.25rem !important;
+    width: auto !important;
+    height: 2.25rem !important;
+    padding: 0 0.65rem !important;
+    margin: 0 !important;
+    border-radius: 0.5rem !important;
+    border: 1px solid #e5e7eb !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+    float: none !important;
+    text-indent: 0 !important;
+    overflow: visible !important;
+}
+
+/* Ganti teks "Sebelumnya" / "Selanjutnya" bawaan jadi ikon panah ‹ › */
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next {
+    font-size: 0 !important;   /* sembunyikan teks aslinya tanpa perlu ubah language file */
+    padding: 0 !important;
+    width: 2.25rem !important;
+    min-width: 2.25rem !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous::before,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next::before {
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    color: inherit !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous::before {
+    content: '‹' !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.next::before {
+    content: '›' !important;
+}
+
+/* Hover (bukan tombol aktif / disabled) */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
+    background: #f9fafb !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+
+/* Halaman aktif */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #4f46e5 !important;
+    border-color: #4f46e5 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Sebelumnya / Selanjutnya saat tidak bisa diklik */
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+    background: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    color: #d1d5db !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* Titik-titik "..." saat halaman banyak */
+.dataTables_wrapper .dataTables_paginate .ellipsis {
+    display: inline-flex;
+    align-items: center;
+    height: 2.25rem;
+    color: #9ca3af;
+    padding: 0 0.25rem;
+}
+
+/* Rapikan bar info "Menampilkan X-Y dari Z data" biar sejajar dengan pagination */
+.dataTables_wrapper .dataTables_info {
+    color: #6b7280;
+    font-size: 0.8125rem;
+    padding-top: 0.5rem;
+}
+
+.dataTables_wrapper .row:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .dataTables_wrapper .dataTables_paginate {
+        justify-content: flex-start;
+    }
+}

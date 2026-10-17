@@ -1,0 +1,37 @@
+/* Mobile-First Optimization for Teknisi Dashboard */
+
+/* Touch-friendly buttons */
+.btn-touch {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Cards with better touch spacing */
+.card-touch {
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+/* Larger tap targets on mobile */
+@media (max-width: 640px) {
+    .tap-target {
+        padding: 12px 16px;
+    }
+    
+    /* Improve readability */
+    .text-mobile-base {
+        font-size: 16px;
+    }
+    
+    /* Better spacing */
+    .gap-mobile {
+        gap: 12px;
+    }
+}
+
+/* Bottom nav safe area for modern phones */
+@supports (padding: max(0px)) {
+    .fixed.bottom-0 {
+        padding-bottom: max(env(safe-area-inset-bottom), 0px);
+    }
+}
