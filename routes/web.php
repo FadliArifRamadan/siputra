@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
 // ROUTE DASHBOARD DEFAULT (Redirect ke role masing-masing)
 // ==========================================
 Route::get('/dashboard', function () {
+    /** @var \App\Models\User $user */
     $user = auth()->user();
 
     // Jika tidak login, redirect ke login
@@ -275,6 +276,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         ->group(function () {
             Route::get('/', [LaporanKerusakanController::class, 'index'])->name('index');
             Route::get('/{laporanKerusakan}', [LaporanKerusakanController::class, 'show'])->name('show');
+            Route::delete('/{laporanKerusakan}', [LaporanKerusakanController::class, 'destroy'])->name('destroy');
         });
 });
 
@@ -309,10 +311,10 @@ Route::middleware(['auth', 'account.active'])->group(function () {
             Route::get('/{penugasan}', [TeknisiController::class, 'show'])->name('show');
             Route::get('/{penugasan}/close', [TeknisiController::class, 'closeForm'])->name('close');
             Route::post('/{penugasan}/close', [TeknisiController::class, 'storeClose'])->name('store-close');
-            
+
             // ✅ ROUTE BARU UNTUK AUTO CLOSE (TANPA BUKTI)
             Route::post('/{penugasan}/auto-close', [TeknisiController::class, 'autoClose'])->name('auto-close');
-            
+
             Route::patch('/{penugasan}/progress', [TeknisiController::class, 'updateProgress'])->name('update-progress');
         });
 
@@ -367,6 +369,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
             Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('mark-read');
             Route::get('/unread-count', [NotificationController::class, 'unreadCount'])->name('unread-count');
+            Route::delete('/clear', [NotificationController::class, 'destroyAll'])->name('clear');
+            Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('destroy');
         });
 });
 
@@ -384,7 +388,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/buat-symlink', function () {
     $targetFolder = storage_path('app/public');
     $linkFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
-    
+
     // Gunakan fungsi symlink bawaan PHP
     try {
         symlink($targetFolder, $linkFolder);
@@ -393,7 +397,7 @@ Route::get('/buat-symlink', function () {
         return 'Gagal: ' . $e->getMessage();
     }
 });
-Route::get('/clear-cache', function() {
+Route::get('/clear-cache', function () {
     \Illuminate\Support\Facades\Artisan::call('config:clear');
     \Illuminate\Support\Facades\Artisan::call('cache:clear');
     \Illuminate\Support\Facades\Artisan::call('view:clear');
