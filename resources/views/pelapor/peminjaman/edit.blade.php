@@ -76,6 +76,11 @@
                         @error('waktu_mulai')
                         <p class="text-xs text-rose-600 font-medium">{{ $message }}</p>
                         @enderror
+                        {{-- Hint ruangan: muncul dinamis via JS --}}
+                        <div id="hint-ruangan" class="hidden flex items-center gap-1.5 text-xs text-amber-700 font-medium bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                            <i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i>
+                            Peminjaman <strong>ruangan</strong> harus diajukan minimal <strong>2 hari sebelumnya (H-2)</strong>.
+                        </div>
                     </div>
 
                     <!-- Waktu Selesai -->
@@ -111,6 +116,7 @@
                                         @foreach ($fasilitas as $fasItem)
                                         <option value="{{ $fasItem->id }}"
                                             data-stok-total="{{ $fasItem->stok_total }}"
+                                            data-kategori="{{ $fasItem->kategori }}"
                                             data-nama="{{ $fasItem->nama_fasilitas }}"
                                             {{ old("items.{$index}.fasilitas_id", $item->fasilitas_id) == $fasItem->id ? 'selected' : '' }}>
                                             {{ $fasItem->nama_fasilitas }} (Kapasitas: {{ $fasItem->stok_total }} unit)
@@ -516,6 +522,31 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // ✅ Tampilkan hint H-2 jika ada ruangan yang dipilih
+    function updateHintRuangan() {
+        const hintEl = document.getElementById('hint-ruangan');
+        if (!hintEl) return;
+        const hasRuangan = Array.from(document.querySelectorAll('.item-select')).some(sel => {
+            const opt = sel.options[sel.selectedIndex];
+            return opt && opt.getAttribute('data-kategori') === 'prasarana';
+        });
+        if (hasRuangan) {
+            hintEl.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        } else {
+            hintEl.classList.add('hidden');
+        }
+    }
+
+    document.getElementById('items-container').addEventListener('change', function(e) {
+        if (e.target.classList.contains('item-select')) {
+            updateHintRuangan();
+        }
+    });
+
+    // Jalankan saat load (untuk edit form yang sudah ada item terpilih)
+    updateHintRuangan();
 
     // Validasi form saat submit jika ada jadwal bentrok
     const editForm = document.querySelector('form');
