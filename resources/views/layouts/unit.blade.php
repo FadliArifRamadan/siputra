@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title', 'UNIT Panel') - {{ config('app.name', 'UCIC') }}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:500,600,700,800|inter:400,500,600&display=swap"
+        rel="stylesheet" />
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --ink-950: #191333;
+            --ink-900: #241c47;
+            --ink-800: #2f2559;
+            --sunset-500: #f2723b;
+            --sunset-400: #f7924f;
+            --sunset-300: #fbb35f;
+            --cream-50: #fbf7f0;
+            --cream-100: #f5ede1;
+            --stone-ink: #2a2338;
+            --stone-muted: #7a7189;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cream-50);
+            color: var(--stone-ink);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-heading {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+        }
+    </style>
+
+    @stack('styles')
+</head>
+
+<body class="antialiased selection:bg-[#f2723b] selection:text-white" x-data="{ mobileMenuOpen: false }">
+    <div class="min-h-screen flex flex-col" style="background-color: var(--cream-50);">
+        <!-- Navigation Khusus UNIT -->
+        <nav class="sticky top-0 z-50 backdrop-blur-md border-b text-white shadow-lg shadow-[#19133315]"
+            style="background-color: rgba(25,19,51,0.94); border-color: rgba(255,255,255,0.1);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-18 sm:h-20">
+                    <div class="flex items-center gap-8">
+                        <a href="{{ route('unit.dashboard') }}" class="flex items-center gap-3 group shrink-0">
+                            <img src="{{ asset('images/logo-ucic.png') }}" alt="Logo UCIC"
+                                class="h-9 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="hidden text-xl font-bold font-heading text-white tracking-tight">🏛️
+                                UCIC</span>
+                            <div>
+                                <span
+                                    class="text-base font-bold tracking-tight font-heading block leading-none text-white">UCIC
+                                    FACILITY</span>
+                                <span class="text-[10px] font-medium tracking-[0.15em] uppercase"
+                                    style="color: var(--sunset-300);">UNIT PANEL</span>
+                            </div>
+                        </a>
+
+                        <!-- Menu Navigasi Desktop -->
+                        <div class="hidden md:flex items-center gap-2">
+                            <a href="{{ route('unit.dashboard') }}"
+                                class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('unit.dashboard') ? 'bg-white/15 text-white font-semibold border border-white/10 shadow-sm' : 'text-white/70 hover:text-white hover:bg-white/10' }}">
+                                Dashboard
+                            </a>
+                            <a href="{{ route('pelapor.pengajuan.index') }}"
+                                class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('pelapor.pengajuan.*') ? 'bg-white/15 text-white font-semibold border border-white/10 shadow-sm' : 'text-white/70 hover:text-white hover:bg-white/10' }}">
+                                Laporan Kerusakan
+                            </a>
+                            <a href="{{ route('pelapor.peminjaman.index') }}"
+                                class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('pelapor.peminjaman.*') ? 'bg-white/15 text-white font-semibold border border-white/10 shadow-sm' : 'text-white/70 hover:text-white hover:bg-white/10' }}">
+                                Peminjaman
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <!-- Notifikasi -->
+                        <a href="{{ route('notifications.index') }}"
+                            class="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-200 relative">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                        </a>
+
+                        <div class="h-5 w-px bg-white/15 hidden sm:block"></div>
+
+                        <span class="text-sm font-semibold text-white/90 hidden sm:inline-block">
+                            {{ Auth::user()->nama }}
+                        </span>
+
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit"
+                                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-300 hover:text-rose-200 hover:bg-rose-500/15 border border-rose-500/20 transition-all duration-200 flex items-center gap-1.5">
+                                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                                <span class="hidden sm:inline">Logout</span>
+                            </button>
+                        </form>
+
+                        <button @click="mobileMenuOpen = !mobileMenuOpen"
+                            class="md:hidden p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none">
+                            <i data-lucide="menu" x-show="!mobileMenuOpen" class="w-6 h-6"></i>
+                            <i data-lucide="x" x-show="mobileMenuOpen" class="w-6 h-6" x-cloak></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Nav Dropdown -->
+            <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-t border-white/10 px-4 pt-3 pb-5 space-y-1"
+                style="background-color: var(--ink-950);">
+                <a href="{{ route('unit.dashboard') }}"
+                    class="block py-2.5 px-3 rounded-lg text-sm font-medium {{ request()->routeIs('unit.dashboard') ? 'bg-white/15 text-white font-semibold' : 'text-white/70 hover:text-white hover:bg-white/10' }}">
+                    Dashboard
+                </a>
+                <a href="{{ route('pelapor.pengajuan.index') }}"
+                    class="block py-2.5 px-3 rounded-lg text-sm font-medium {{ request()->routeIs('pelapor.pengajuan.*') ? 'bg-white/15 text-white font-semibold' : 'text-white/70 hover:text-white hover:bg-white/10' }}">
+                    Laporan Kerusakan
+                </a>
+                <a href="{{ route('pelapor.peminjaman.index') }}"
+                    class="block py-2.5 px-3 rounded-lg text-sm font-medium {{ request()->routeIs('pelapor.peminjaman.*') ? 'bg-white/15 text-white font-semibold' : 'text-white/70 hover:text-white hover:bg-white/10' }}">
+                    Peminjaman
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            @yield('content')
+        </main>
+    </div>
+
+    @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+
+</html>

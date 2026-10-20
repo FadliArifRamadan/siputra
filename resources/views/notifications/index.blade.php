@@ -9,6 +9,8 @@
         $layout = 'layouts.teknisi';
     } elseif ($user->hasRole('bikem')) {
         $layout = 'layouts.bikem';
+    } elseif ($user->hasRole(['unit', 'UNIT'])) {
+        $layout = 'layouts.unit';
     }
 @endphp
 

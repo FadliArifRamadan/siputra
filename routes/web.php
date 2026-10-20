@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\SuratController;
+use App\Http\Controllers\Unit\UnitController;
 
 Route::get('/', function () {
     $fasilitasKampus = Fasilitas::kampus()
@@ -75,6 +76,8 @@ Route::get('/dashboard', function () {
         return redirect()->route('teknisi.dashboard');
     } elseif ($user->hasRole('pelapor')) {
         return redirect()->route('pelapor.dashboard');
+    } elseif ($user->hasRole(['unit', 'UNIT'])) {
+        return redirect()->route('unit.dashboard');
     }
 
     // Fallback
@@ -92,7 +95,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     // CRUD PENGAJUAN KERUSAKAN
     Route::prefix('pelapor/pengajuan')
         ->name('pelapor.pengajuan.')
-        ->middleware('role:pelapor|bikem')
+        ->middleware('role:pelapor|bikem|unit|UNIT')
         ->group(function () {
             Route::get('/', [PengajuanKerusakanController::class, 'index'])->name('index');
             Route::get('/create', [PengajuanKerusakanController::class, 'create'])->name('create')->middleware('qr.redirect');
@@ -106,7 +109,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     // CRUD PEMINJAMAN FASILITAS
     Route::prefix('pelapor/peminjaman')
         ->name('pelapor.peminjaman.')
-        ->middleware('role:pelapor|bikem')
+        ->middleware('role:pelapor|bikem|unit|UNIT')
         ->group(function () {
             Route::get('/', [PeminjamanFasilitasController::class, 'index'])->name('index');
             Route::get('/create', [PeminjamanFasilitasController::class, 'create'])->name('create');
@@ -129,10 +132,10 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         ->group(function () {
             Route::get('/peminjaman/{peminjaman}/preview', [SuratController::class, 'preview'])
                 ->name('preview')
-                ->middleware('role:pelapor|bikem');
+                ->middleware('role:pelapor|bikem|unit|UNIT');
             Route::get('/peminjaman/{peminjaman}/download', [SuratController::class, 'download'])
                 ->name('download')
-                ->middleware('role:pelapor|bikem');
+                ->middleware('role:pelapor|bikem|unit|UNIT');
         });
 });
 
@@ -292,6 +295,13 @@ Route::middleware(['auth', 'account.active', 'role:bikem'])->prefix('bikem')->na
         Route::patch('/{peminjaman}/revisi', [PeminjamanBikemController::class, 'requestRevision'])->name('revisi');
         Route::patch('/{peminjaman}/reject', [PeminjamanBikemController::class, 'reject'])->name('reject');
     });
+});
+
+// ==========================================
+// ROUTE DASHBOARD UNIT
+// ==========================================
+Route::middleware(['auth', 'account.active', 'role:unit|UNIT'])->group(function () {
+    Route::get('/unit/dashboard', [UnitController::class, 'index'])->name('unit.dashboard');
 });
 
 // ==========================================

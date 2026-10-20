@@ -47,6 +47,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('rtk.dashboard'));
         } elseif ($user->hasRole('teknisi')) {
             return redirect()->intended(route('teknisi.dashboard'));
+        } elseif ($user->hasRole(['unit', 'UNIT'])) {
+            return redirect()->intended(route('unit.dashboard'));
         } elseif ($user->hasRole('pelapor')) {
             return redirect()->intended(route('pelapor.dashboard'));
         }
