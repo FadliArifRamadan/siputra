@@ -118,8 +118,8 @@
                             class="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-200 relative">
                             <i data-lucide="bell" class="w-5 h-5"></i>
                             <span id="notification-badge"
-                                class="hidden absolute -top-0.5 -right-0.5 text-white text-[10px] font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center border border-[#191333]"
-                                style="background-color: var(--sunset-500);">
+                                class="absolute -top-0.5 -right-0.5 text-white text-[10px] font-bold rounded-full h-4 min-w-[16px] px-1 items-center justify-center border border-[#191333]"
+                                style="background-color: var(--sunset-500); display: none;">
                                 0
                             </span>
                         </a>
@@ -188,9 +188,9 @@
                     const badge = document.getElementById('notification-badge');
                     if (data.count > 0) {
                         badge.textContent = data.count > 99 ? '99+' : data.count;
-                        badge.classList.remove('hidden');
+                        badge.style.display = 'flex';
                     } else {
-                        badge.classList.add('hidden');
+                        badge.style.display = 'none';
                     }
                 })
                 .catch(() => {});
